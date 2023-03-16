@@ -4,6 +4,7 @@ import co.edu.uniquindio.biblioteca.dto.LibroDTO;
 import co.edu.uniquindio.biblioteca.entity.Autor;
 import co.edu.uniquindio.biblioteca.entity.Libro;
 import co.edu.uniquindio.biblioteca.model.Autor;
+import co.edu.uniquindio.biblioteca.model.Genero;
 import co.edu.uniquindio.biblioteca.model.Libro;
 import co.edu.uniquindio.biblioteca.repo.AutorRepo;
 import co.edu.uniquindio.biblioteca.repo.LibroRepo;
@@ -67,7 +68,7 @@ public class LibroServicio {
         Libro nuevo = Libro.builder()
                 .isbn(libro.isbn())
                 .nombre(libro.nombre())
-                .genero(libro.genero())
+                .genero(Genero.values()[libro.genero()])
                 .fechaPublicacion(libro.fechaPublicacion())
                 .unidades(libro.unidades())
                 .autor(autores)
