@@ -39,7 +39,6 @@ public class ClienteController {
         return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("Se eliminó correctamente") );
     }
 
-
     @PutMapping("/{idCliente}")
     public ResponseEntity<Respuesta<ClienteGetDTO>> update(@PathVariable String idCliente, @RequestBody ClientePostDTO cliente){
         return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("El cliente se modificó correctamente", clienteServicio.update(idCliente, cliente)) );

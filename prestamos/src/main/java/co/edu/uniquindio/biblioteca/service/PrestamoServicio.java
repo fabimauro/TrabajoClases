@@ -1,6 +1,7 @@
 package co.edu.uniquindio.biblioteca.service;
 
 import co.edu.uniquindio.biblioteca.dto.ClienteGetDTO;
+
 import co.edu.uniquindio.biblioteca.dto.PrestamoPostDTO;
 import co.edu.uniquindio.biblioteca.dto.PrestamoQueryDTO;
 import co.edu.uniquindio.biblioteca.dto.Respuesta;
@@ -36,6 +37,22 @@ public class PrestamoServicio {
         prestamo.setFechaPrestamo(LocalDateTime.now());
 
         /*TODO crear una validación para comprobar que los ISBN de los libros sí existen */
+        List<String> libros = prestamo.getIsbnLibros();
+        int aux =0; ;
+        for (String l : libros) {
+            if (findLibroByCodigo(l)){
+
+            }else{
+                aux +=1;
+
+            }
+            if(aux>0){
+                new RuntimeException("isbn no encontrado"+"la cantidad de isbn no encontrados es:" +aux);
+            }else{
+
+            }
+
+        }
 
         prestamo.setIsbnLibros(prestamo.getIsbnLibros());
         prestamo.setFechaDevolucion(prestamoDTO.fechaDevolucion());
@@ -97,7 +114,7 @@ public class PrestamoServicio {
         try {
 
             Respuesta<ClienteGetDTO> respuesta = restTemplate.exchange(
-                    "http://localhost:8081/api/cliente/" + codigoCliente,
+                    "http://cliente-service/api/cliente" + codigoCliente,
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<Respuesta<ClienteGetDTO>>() {}).getBody();
@@ -107,6 +124,24 @@ public class PrestamoServicio {
         }catch (Exception e){
             throw new RuntimeException("Hubo un error recuperando la información del cliente");
         }
+    }
+
+    private boolean findLibroByCodigo(String codigoLibro){
+
+
+        try {
+            Respuesta<Boolean> respuesta = restTemplate.exchange(
+                    "http://libro-service/api/libro" +codigoLibro,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<Respuesta<Boolean>>() {}).getBody();
+
+            return respuesta.getDato();
+
+        }catch (Exception e){
+            throw new RuntimeException("Hubo un error recuperando la información del libro");
+        }
+
     }
 
 }

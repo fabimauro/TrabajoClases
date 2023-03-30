@@ -1,15 +1,11 @@
 package co.edu.uniquindio.biblioteca.servicio;
 
 import co.edu.uniquindio.biblioteca.dto.LibroDTO;
-import co.edu.uniquindio.biblioteca.entity.Autor;
-import co.edu.uniquindio.biblioteca.entity.Libro;
 import co.edu.uniquindio.biblioteca.model.Autor;
 import co.edu.uniquindio.biblioteca.model.Genero;
 import co.edu.uniquindio.biblioteca.model.Libro;
 import co.edu.uniquindio.biblioteca.repo.AutorRepo;
 import co.edu.uniquindio.biblioteca.repo.LibroRepo;
-import co.edu.uniquindio.biblioteca.servicios.excepciones.AutorNoEncontradoException;
-import co.edu.uniquindio.biblioteca.servicios.excepciones.LibroNoEncontradoException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
