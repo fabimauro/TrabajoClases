@@ -3,4 +3,6 @@ include 'libros'
 include 'clientes'
 include 'prestamos'
 include 'eureka-server'
+include 'gateway'
+include 'gateway'
 
