@@ -27,6 +27,8 @@ public class PrestamoServicio {
     private final RestTemplate restTemplate;
 
     private final PrestamoRepo prestamoRepo;
+
+
     public long save(PrestamoPostDTO prestamoDTO){
 
         ClienteGetDTO cliente = findClienteByCodigo(prestamoDTO.clienteID());
@@ -37,24 +39,19 @@ public class PrestamoServicio {
         prestamo.setFechaPrestamo(LocalDateTime.now());
 
         /*TODO crear una validación para comprobar que los ISBN de los libros sí existen */
-        List<String> libros = prestamo.getIsbnLibros();
+        List<String> libros = prestamoDTO.isbnLibros();
         int aux =0; ;
         for (String l : libros) {
-            if (findLibroByCodigo(l)){
-
-            }else{
+            if (!findLibroByCodigo(l)){
                 aux +=1;
-
             }
-            if(aux>0){
-                new RuntimeException("isbn no encontrado"+"la cantidad de isbn no encontrados es:" +aux);
-            }else{
-
-            }
-
         }
 
-        prestamo.setIsbnLibros(prestamo.getIsbnLibros());
+        if(aux>0){
+            throw new RuntimeException("la cantidad de isbn no encontrados es:" +aux);
+        }
+
+        prestamo.setIsbnLibros(libros);
         prestamo.setFechaDevolucion(prestamoDTO.fechaDevolucion());
 
         return prestamoRepo.save(prestamo).getCodigo();
@@ -114,7 +111,7 @@ public class PrestamoServicio {
         try {
 
             Respuesta<ClienteGetDTO> respuesta = restTemplate.exchange(
-                    "http://cliente-service/api/cliente" + codigoCliente,
+                    "http://cliente-service/api/cliente/" + codigoCliente,
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<Respuesta<ClienteGetDTO>>() {}).getBody();
@@ -122,6 +119,7 @@ public class PrestamoServicio {
             return respuesta.getDato();
 
         }catch (Exception e){
+            e.printStackTrace();
             throw new RuntimeException("Hubo un error recuperando la información del cliente");
         }
     }
@@ -131,7 +129,7 @@ public class PrestamoServicio {
 
         try {
             Respuesta<Boolean> respuesta = restTemplate.exchange(
-                    "http://libro-service/api/libro" +codigoLibro,
+                    "http://libro-service/api/libro/" +codigoLibro,
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<Respuesta<Boolean>>() {}).getBody();
@@ -139,6 +137,7 @@ public class PrestamoServicio {
             return respuesta.getDato();
 
         }catch (Exception e){
+            e.printStackTrace();
             throw new RuntimeException("Hubo un error recuperando la información del libro");
         }
 

@@ -31,8 +31,8 @@ public class LibroServicio {
         return libroRepo.save( convertir(libro) );
     }
 
-    public Libro findById(String isbn){
-        return libroRepo.findById(isbn).orElseThrow(()-> new RuntimeException("El libro no existe"));
+    public boolean findById(String isbn){
+        return libroRepo.existsById(isbn);
     }
 
     public List<Libro> findAll(){

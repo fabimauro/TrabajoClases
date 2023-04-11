@@ -29,7 +29,7 @@ public class LibroController {
     }
 
     @GetMapping("/{isbnLibro}")
-    public ResponseEntity<Respuesta<Libro>> findAll(@PathVariable String isbnLibro){
+    public ResponseEntity<Respuesta<Boolean>> findById(@PathVariable String isbnLibro){
         return ResponseEntity.status(HttpStatus.OK).body( new Respuesta<>("", libroServicio.findById(isbnLibro)) );
     }
 
