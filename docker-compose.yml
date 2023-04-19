@@ -9,6 +9,17 @@ services:
       - MYSQL_ROOT_PASSWORD=admin
     volumes:
       - './volumenes/postgres:/var/lib/mysql'
+      
+    mongo:
+     image: mongo
+     restart: always
+     environment:
+        MONGO_INITDB_ROOT_USERNAME: admin
+        MONGO_INITDB_ROOT_PASSWORD: example
+     ports:
+      - '27017:27017'
+     volumes:
+      - './volumenes/mongo:/var/lib/mongo'
 
   eureka-server:
     image: eureka-server
@@ -43,6 +54,17 @@ services:
       - eureka-server
       - mysql
 
+  clientes:
+    image: cliente-service
+    build: ./clientes
+    restart: always
+    environment:
+      - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/
+      - spring.data.mongodb.uri=mongodb://mongo:27017/clientes
+    depends_on:
+      - mongo
+      - eureka-server
+      
   gateway:
     image: gateway-service
     build: ./gateway
