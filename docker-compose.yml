@@ -1,14 +1,31 @@
 version: '3.1'
 
+volumes:
+  mysql_data:
+  mongo_data:
+
 services:
 
   mysql:
     image: mysql
     restart: always
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=admin
+
+  mongo:
+    image: mongo
+    restart: always
     volumes:
-      - './volumenes/postgres:/var/lib/mysql'
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: admin
+    ports:
+      - '27017:27017'
 
   eureka-server:
     image: eureka-server
@@ -16,6 +33,17 @@ services:
     restart: always
     ports:
       - "8761:8761"
+
+  clientes:
+    image: cliente-service
+    build: ./clientes
+    restart: always
+    environment:
+      - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/
+      - spring.data.mongodb.uri=mongodb://mongo:27017/clientes
+    depends_on:
+      - mongo
+      - eureka-server
 
   libros:
     image: libro-service
