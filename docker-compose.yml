@@ -3,8 +3,21 @@ version: '3.1'
 volumes:
   mysql_data:
   mongo_data:
+  keycloak_data_1:
 
 services:
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:21.0.2
+    command:
+      - start-dev
+    volumes:
+      - keycloak_data_1:/opt/keycloak/data/
+    ports:
+      - "9090:8080"
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
 
   mysql:
     image: mysql
@@ -75,11 +88,17 @@ services:
     image: gateway-service
     build: ./gateway
     ports:
-      - "8080:8080"
+      - "8080:8082"
     environment:
+      - server.port=8082
       - eureka.client.service-url.defaultZone=http://eureka-server:8761/eureka/
+      - spring.security.oauth2.resourceserver.jwt.issuer-uri=http://keycloak:8080/realms/tutorial-api
+      - spring.security.oauth2.resourceserver.jwt.jwk-set-uri=http://keycloak:8080/realms/tutorial-api/protocol/openid-connect/certs
+
     depends_on:
       - eureka-server
       - libros
       - clientes
       - prestamos
+      - keycloak
+
