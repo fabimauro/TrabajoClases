@@ -7,6 +7,11 @@ volumes:
 
 services:
 
+  adminer:
+    image: adminer
+    ports:
+      - "9191:8080"
+
   keycloak:
     image: quay.io/keycloak/keycloak:21.0.2
     command:
@@ -57,6 +62,18 @@ services:
     depends_on:
       - mongo
       - eureka-server
+
+  autenticacion:
+    image: autenticacion-service
+    build: ./autenticacion
+    restart: always
+    depends_on:
+      - keycloak
+      - eureka-server
+    environment:
+      keycloack.admin-url: http://keycloak:8080/admin/realms/tutorial-api
+      spring.security.oauth2.resourceserver.jwt.issuer-uri: http://keycloak:8080/realms/tutorial-api
+      eureka.client.service-url.defaultZone: http://eureka-server:8761/eureka
 
   libros:
     image: libro-service
